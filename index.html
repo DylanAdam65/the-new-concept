@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robin Gray Design | Bespoke Architecture</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CORE VARIABLES & RESET --- */
+        :root {
+            --alabaster: #FCFCFA;
+            --charcoal: #0a0a0a;
+            --taupe: #9A8A78;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        
+        body {
+            background-color: var(--alabaster);
+            color: var(--charcoal);
+            font-family: var(--font-sans);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- ADVANCED ANIMATIONS (Scroll Reveals) --- */
+        .reveal {
+            opacity: 0; transform: translateY(40px);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+
+        /* --- TYPOGRAPHY --- */
+        .heading-font { font-family: var(--font-sans); font-weight: 300; letter-spacing: -0.01em; }
+        .font-light { font-weight: 300; }
+        .text-taupe { color: var(--taupe); }
+        .tracking-widest { letter-spacing: 0.2em; }
+        .tracking-mega { letter-spacing: 0.35em; }
+        .uppercase { text-transform: uppercase; }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed; top: 0; left: 0; width: 100%;
+            z-index: 50; padding: 1.2rem 4rem;
+            display: flex; justify-content: space-between; align-items: center;
+            mix-blend-mode: difference; color: #fff;
+            transition: background-color 0.4s ease, padding 0.4s ease, mix-blend-mode 0s;
+        }
+        nav.scrolled {
+            background-color: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px); mix-blend-mode: normal;
+            padding: 1rem 4rem; box-shadow: 0 4px 30px rgba(0,0,0,0.1);
+        }
+        .nav-links { display: flex; gap: 3rem; font-size: 11px; font-weight: 300; }
+        
+        .nav-links a, .nav-links button {
+            color: #fff; text-decoration: none;
+            background: none; border: none; cursor: pointer;
+            transition: color 0.3s ease; letter-spacing: 0.2em;
+            font-family: inherit; font-size: inherit; font-weight: inherit;
+            padding: 0; outline: none;
+        }
+        .nav-links a:hover, .nav-links button:hover { color: var(--taupe); }
+
+        /* PURE WHITE LOGO FOR HEADER */
+        .logo img {
+            width: 220px; transition: transform 0.4s ease; display: block;
+            filter: brightness(0) invert(1) !important; opacity: 1 !important;
+        }
+        .logo:hover img { transform: scale(1.015); }
+
+        /* --- FUNCTIONAL SEARCH OVERLAY --- */
+        #search-overlay {
+            position: fixed; inset: 0;
+            background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(15px);
+            z-index: 100; display: none; flex-direction: column;
+            align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.5s ease;
+        }
+        .close-btn {
+            position: absolute; top: 3rem; right: 4rem;
+            color: #fff; background: none; border: none;
+            font-size: 11px; cursor: pointer; transition: color 0.3s ease;
+            font-family: inherit; letter-spacing: 0.2em;
+        }
+        .close-btn:hover { color: var(--taupe); }
+        .search-container { width: 100%; max-width: 800px; padding: 0 2rem; text-align: center; position: relative; }
+        .search-input {
+            width: 100%; background: transparent; border: none;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            color: #fff; font-size: 3.5rem; text-align: center; font-weight: 300;
+            padding: 1rem; outline: none; font-family: var(--font-sans);
+            transition: border-color 0.4s ease, opacity 0.4s ease;
+        }
+        .search-input:focus { border-color: var(--taupe); }
+        .search-status {
+            position: absolute; top: 120%; left: 0; width: 100%;
+            color: var(--taupe); font-size: 11px; letter-spacing: 0.3em;
+            text-transform: uppercase; opacity: 0; transition: opacity 0.3s ease;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero { 
+            position: relative; height: 100vh; width: 100%; background: #000; overflow: hidden; 
+            cursor: grab; user-select: none;
+        }
+        .hero:active { cursor: grabbing; }
+        .hero img {
+            position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none;
+            object-fit: cover; opacity: 0; transform: scale(1);
+            transition: opacity 1.8s ease-in-out, transform 12s linear; 
+        }
+        .hero img.active { opacity: 0.65; transform: scale(1.08); }
+        .hero-gradient {
+            position: absolute; inset: 0; pointer-events: none;
+            background: linear-gradient(to top, rgba(10,10,10,0.8), transparent, rgba(10,10,10,0.3));
+        }
+
+        /* --- GLOBAL LAYOUT & BUTTONS --- */
+        .section { padding: 8rem 2rem; }
+        .container { max-width: 1300px; margin: 0 auto; width: 100%; }
+        .text-center { text-align: center; }
+        
+        .btn-link {
+            font-size: 10px; border-bottom: 1px solid var(--charcoal);
+            padding-bottom: 4px; text-decoration: none; color: var(--charcoal);
+            transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.2em;
+        }
+        .btn-link:hover { color: var(--taupe); border-color: var(--taupe); }
+        
+        .btn-solid {
+            padding: 1.2rem 3rem; background: var(--charcoal); color: #fff;
+            text-decoration: none; font-size: 10px; border: none; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 0.2em; transition: all 0.4s ease;
+        }
+        .btn-solid:hover { background: var(--taupe); }
+
+        /* LUXURY OUTLINE HOVER BUTTONS */
+        .btn-outline {
+            padding: 1.4rem 4rem; /* Adjusted wider box */
+            background: transparent; border: 1px solid var(--charcoal); color: var(--charcoal);
+            text-decoration: none; font-size: 10px; cursor: pointer; position: relative;
+            text-transform: uppercase; letter-spacing: 0.2em; z-index: 1; overflow: hidden;
+            transition: color 0.4s ease, border-color 0.4s ease; display: inline-block;
+        }
+        .btn-outline::before {
+            content: ''; position: absolute; inset: 0; background: var(--charcoal);
+            z-index: -1; transform: scaleY(0); transform-origin: bottom;
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .btn-outline:hover::before { transform: scaleY(1); transform-origin: top; }
+        .btn-outline:hover { color: #fff; border-color: var(--charcoal); }
+
+        /* --- VISION SECTION --- */
+        .vision-section {
+            border-top: 1px solid rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding: 10rem 2rem;
+            background: linear-gradient(to bottom, #FCFCFA, #F9F9F8);
+        }
+        .vision-text { 
+            font-size: 2.25rem; line-height: 1.6; color: var(--charcoal); 
+            position: relative; z-index: 1; max-width: 800px; margin: 0 auto;
+        }
+        .vision-text::before {
+            content: '“'; position: absolute; top: -1.5rem; left: -2.5rem;
+            font-size: 6rem; color: rgba(154, 138, 120, 0.2); font-family: var(--font-sans); font-weight: 300;
+            z-index: -1; line-height: 1;
+        }
+        
+        /* --- DESIGN APPROACH --- */
+        .design-approach { position: relative; height: 80vh; overflow: hidden; }
+        .design-approach img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; transition: transform 1.5s ease; }
+        .design-approach:hover img { transform: scale(1.015); }
+        .design-content { position: absolute; bottom: 5rem; left: 5rem; color: #fff; z-index: 2; }
+        .design-approach::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%);
+        }
+
+        /* --- IN THE WILD --- */
+        .wild-editorial { display: flex; gap: 4rem; align-items: stretch; }
+        .wild-left { flex: 1; position: relative; background: #ebebeb; border-radius: 2px; overflow: hidden; aspect-ratio: 3/4; }
+        .wild-left img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s ease; }
+        .wild-left:hover img { transform: scale(1.015); }
+        
+        .wild-right { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .wild-right-text { margin-bottom: 2rem; }
+        .wild-staggered-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: flex-end; }
+        
+        .wild-card { overflow: hidden; position: relative; background: #ebebeb; aspect-ratio: 3/4; border-radius: 2px; }
+        .wild-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s ease; }
+        .wild-card:hover img { transform: scale(1.015); }
+
+        /* --- CRAFTED WITH CARE --- */
+        .crafted-care { position: relative; height: 80vh; background: #000; overflow: hidden; margin-top: 4rem; }
+        .crafted-img-wrapper { position: absolute; inset: -10%; width: 120%; height: 120%; }
+        .crafted-care img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
+        .crafted-content {
+            position: absolute; inset: 0; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; color: #fff; text-align: center;
+            background: radial-gradient(circle, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.7) 100%);
+        }
+
+        /* --- LATEST DESIGNS --- */
+        .latest-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4rem; }
+        .gallery-asymmetric { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; }
+        .design-card { cursor: pointer; text-decoration: none; display: block; }
+        
+        .design-img-wrapper { 
+            background: #f5f5f5; overflow: hidden; margin-bottom: 1.5rem; 
+            position: relative; aspect-ratio: 2/3; border-radius: 2px;
+        }
+        .design-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s ease; }
+        .design-overlay {
+            position: absolute; inset: 0; background: rgba(154, 138, 120, 0.2); opacity: 0; transition: opacity 0.5s ease;
+        }
+        .design-card:hover .design-img-wrapper img { transform: scale(1.015); }
+        .design-card:hover .design-overlay { opacity: 1; }
+        .design-title { font-size: 11px; color: var(--charcoal); margin-bottom: 4px; }
+
+        /* --- FIXED GHOST 'REVEAL' COLLECTIONS SECTION --- */
+        .collections-banner { 
+            position: relative; height: 90vh; 
+            display: flex; align-items: center; justify-content: center;
+            background-image: url('https://images.squarespace-cdn.com/content/699b55b9f68bfd2f93b6ca27/1e0c28e1-6f70-4c86-8551-f05fb2e95a6b/Header+%283%29.png?content-type=image%2Fpng');
+            background-attachment: fixed; background-size: cover; background-position: center; 
+        }
+        /* Increased overlay opacity so the raw white text pops perfectly */
+        .collections-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); z-index: 1; }
+        .collections-content {
+            position: relative; z-index: 2; 
+            background: transparent; /* Card background completely removed */
+            padding: 5rem 6rem; text-align: center; max-width: 600px;
+        }
+        .collections-content h2 { color: #fff !important; }
+        .collections-content p { color: rgba(255,255,255,0.8) !important; }
+
+        /* --- FEATURED IN (INFINITE MARQUEE) --- */
+        .marquee-wrapper { width: 100%; overflow: hidden; padding: 2rem 0; position: relative; }
+        .marquee-wrapper::before, .marquee-wrapper::after {
+            content: ''; position: absolute; top: 0; width: 150px; height: 100%; z-index: 2;
+        }
+        .marquee-wrapper::before { left: 0; background: linear-gradient(to right, #FAFAF9, transparent); }
+        .marquee-wrapper::after { right: 0; background: linear-gradient(to left, #FAFAF9, transparent); }
+        
+        .marquee-track {
+            display: flex; width: max-content; animation: scroll-left 35s linear infinite;
+        }
+        .marquee-set { display: flex; align-items: center; gap: 6rem; padding-right: 6rem; }
+        .marquee-set img { height: 70px; width: auto; object-fit: contain; opacity: 0.6; transition: all 0.4s ease; }
+        .marquee-set img:hover { opacity: 1; transform: scale(1.05); }
+        @keyframes scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        /* --- ADVENTUROUS BEGINNINGS --- */
+        .split-section { display: flex; align-items: center; gap: 6rem; }
+        .split-img { flex: 1; overflow: hidden; border-radius: 2px; }
+        .split-img img { width: 100%; height: auto; transition: transform 1.5s ease; display: block; }
+        .split-img:hover img { transform: scale(1.015); }
+        .split-text { flex: 1; padding-right: 2rem; }
+
+        /* --- 100VH FOOTER SECTION --- */
+        .footer { 
+            background: var(--charcoal); color: #fff; 
+            height: 100vh; min-height: 780px; 
+            display: flex; align-items: center; justify-content: center;
+            padding: 100px 2rem 2rem 2rem; 
+        }
+        .footer .container { height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
+        .footer-header { text-align: center; margin-top: 1rem; }
+        .footer-header h2 { font-size: 3.5rem; margin-bottom: 0.5rem; color: #fff; }
+        .footer-header p { color: #999; font-size: 13px; }
+
+        .showrooms-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;
+            padding-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .showroom-card { background: rgba(255,255,255,0.03); padding: 1.5rem; text-align: center; border-radius: 2px; }
+        .showroom-card h4 { color: var(--taupe); font-size: 11px; letter-spacing: 0.2em; margin-bottom: 0.5rem; }
+        .showroom-card p { font-size: 12px; color: #aaa; font-weight: 300; line-height: 1.6; }
+        
+        .explore-card { 
+            display: flex; align-items: center; justify-content: center; 
+            background: transparent; border: 1px solid rgba(255,255,255,0.1);
+            transition: border-color 0.4s ease, background 0.4s ease; cursor: pointer;
+        }
+        .explore-card a { color: var(--taupe); font-size: 10px; text-decoration: none; letter-spacing: 0.2em; transition: color 0.4s ease; }
+        .explore-card:hover { border-color: var(--taupe); background: rgba(255,255,255,0.01); }
+
+        .media-inquiry { text-align: center; font-size: 11px; color: #aaa; letter-spacing: 0.1em; padding-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .media-inquiry a { color: var(--taupe); text-decoration: none; }
+
+        .footer-bottom { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1rem; }
+        .email-input { display: flex; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 0.5rem; margin-top: 1.5rem; }
+        .email-input input { background: transparent; border: none; color: #fff; outline: none; flex: 1; font-size: 12px; font-weight: 300; }
+        
+        /* PURE WHITE LOGOS FOR FOOTER */
+        .footer-logos { display: flex; gap: 3rem; align-items: center; justify-content: flex-end; margin-bottom: 1.5rem; }
+        .footer-logos img.goodweave { height: 50px; filter: brightness(0) invert(1) !important; opacity: 1 !important; } 
+        .footer-logos img.main-logo { width: 180px; filter: brightness(0) invert(1) !important; opacity: 1 !important; }
+
+        .social-icons { display: flex; gap: 1.2rem; justify-content: flex-end; margin-top: 1rem; }
+        .social-icons a { color: #888; transition: color 0.3s ease; }
+        .social-icons a:hover { color: var(--taupe); }
+        .social-icons svg { width: 16px; height: 16px; fill: currentColor; }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        .blink-cursor { display: inline-block; animation: blink 1s step-end infinite; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1024px) {
+            .gallery-asymmetric { grid-template-columns: repeat(2, 1fr); }
+            .showrooms-grid { grid-template-columns: repeat(2, 1fr); }
+            .wild-editorial, .split-section { flex-direction: column; display: flex; }
+            .wild-left { aspect-ratio: 4/3; }
+            .wild-right { height: auto; gap: 3rem; }
+            .wild-right-text, .split-text { padding: 0; text-align: center; margin-top: 2rem; max-width: 100%; }
+            .footer { height: auto; padding: 8rem 2rem 4rem; } 
+        }
+        @media (max-width: 768px) {
+            nav, nav.scrolled { padding: 1.2rem 2rem; }
+            .nav-links { display: none; }
+            .logo img { width: 150px; }
+            .showrooms-grid, .footer-bottom { grid-template-columns: 1fr; flex-direction: column; }
+            .vision-text { font-size: 1.8rem; }
+            .search-input { font-size: 2rem; }
+            .collections-content { padding: 3rem 2rem; margin: 0 1rem; }
+            .latest-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .footer-logos { justify-content: flex-start; margin-top: 3rem; }
+            .social-icons { justify-content: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav id="navbar">
+        <div class="nav-links uppercase tracking-widest">
+            <a href="#collections">Collection</a>
+            <a href="#about">About</a>
+        </div>
+        <a href="/" class="logo">
+            <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/60f1f401-93e2-4047-9114-40e1d712035f/d+%281%29+%281%29.png?format=1500w" alt="Robin Gray">
+        </a>
+        <div class="nav-links uppercase tracking-widest">
+            <a href="#showrooms">Showrooms</a>
+            <button id="search-btn" class="uppercase tracking-widest">Search</button>
+        </div>
+    </nav>
+
+    <div id="search-overlay">
+        <button id="close-search" class="close-btn tracking-widest uppercase">CLOSE [X]</button>
+        <div class="search-container">
+            <span class="text-taupe uppercase tracking-mega font-light" style="font-size: 10px; display: block; margin-bottom: 1rem;">Search the Archives</span>
+            <input type="text" id="search-input-field" class="search-input" placeholder="Type a design name or color...">
+            <div id="search-status" class="search-status"></div>
+        </div>
+    </div>
+
+    <header class="hero" id="hero-carousel">
+        <img src="https://images.squarespace-cdn.com/content/699b55b9f68bfd2f93b6ca27/1440951f-981d-49a6-ad32-991b8af9d52d/Header+%286%29.png?content-type=image%2Fpng" class="hero-img active">
+        <img src="https://images.squarespace-cdn.com/content/699b55b9f68bfd2f93b6ca27/ddf00ca3-6335-4778-bd89-2fcec98d5a97/Header+%285%29.png?content-type=image%2Fpng" class="hero-img">
+        <img src="https://images.squarespace-cdn.com/content/699b55b9f68bfd2f93b6ca27/71df9171-dc2d-48b8-b388-dbaa0c3d58b9/Header+%284%29.png?content-type=image%2Fpng" class="hero-img">
+        <img src="https://images.squarespace-cdn.com/content/699b55b9f68bfd2f93b6ca27/68fd7303-2053-4973-82ed-3220379c50c9/Header+%282%29.png?content-type=image%2Fpng" class="hero-img">
+        <img src="https://images.squarespace-cdn.com/content/699b55b9f68bfd2f93b6ca27/4825a8af-1ab1-41d6-9a90-f9e41b4f91dc/Header+%287%29.png?content-type=image%2Fpng" class="hero-img">
+        <div class="hero-gradient"></div>
+    </header>
+
+    <section id="about" class="vision-section text-center">
+        <div class="container reveal" style="max-width: 1000px;">
+            <h2 class="text-taupe uppercase tracking-mega font-light" style="font-size: 11px; margin-bottom: 2rem;">Our Vision</h2>
+            <p class="heading-font vision-text">
+                Robin Gray Design is a place where color & texture are woven with innovation & passion to create transformative works of art for the floor.
+            </p>
+            <div style="margin-top: 3rem;">
+                <a href="#" class="btn-link">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="design-approach reveal">
+        <img src="https://images.squarespace-cdn.com/content/699b55b9f68bfd2f93b6ca27/1e0c28e1-6f70-4c86-8551-f05fb2e95a6b/Header+%283%29.png?content-type=image%2Fpng" alt="Approach">
+        <div class="design-content reveal reveal-delay-1">
+            <h3 class="heading-font" style="font-size: 4rem; margin-bottom: 1rem;">Design Approach</h3>
+            <p class="font-light" style="max-width: 450px; opacity: 0.9; letter-spacing: 1px;">Focused on simplicity, guided by creativity, and refined through attention to detail.</p>
+        </div>
+    </section>
+
+    <section class="section container">
+        <div class="wild-editorial">
+            <div class="wild-left reveal">
+                <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/f6c5fed1-ff9a-4df3-845a-b0ce068fc199/12+%283%29+%281%29.png?format=500w" alt="In the wild focal">
+            </div>
+            <div class="wild-right">
+                <div class="wild-right-text reveal reveal-delay-1">
+                    <h2 class="heading-font" style="font-size: 4rem; margin-bottom: 1rem;">In The Wild</h2>
+                    <p style="font-weight: 300; letter-spacing: 1px; line-height: 1.6; color: #555;">
+                        See how our bespoke architectural floor textiles integrate into diverse environments—transforming structure and space into highly elevated, atmospheric sanctuaries.
+                    </p>
+                </div>
+                <div class="wild-staggered-grid">
+                    <div class="wild-card reveal reveal-delay-2">
+                        <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/4939c782-bd46-4e2b-b399-fea293cf6065/In+the+wild-middle.png?format=500w" alt="Wild placement 2">
+                    </div>
+                    <div class="wild-card reveal reveal-delay-3">
+                        <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/a4cb748d-7404-4abc-b419-980cdd11a356/RUG+%283%29.png?format=500w" alt="Wild placement 3">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="crafted-care">
+        <div class="crafted-img-wrapper" id="parallax-img">
+            <img src="https://images.squarespace-cdn.com/content/699b55b9f68bfd2f93b6ca27/68fd7303-2053-4973-82ed-3220379c50c9/Header+%282%29.png?content-type=image%2Fpng" alt="Crafted">
+        </div>
+        <div class="crafted-content reveal">
+            <div style="max-width: 700px; padding: 2rem;">
+                <h2 class="heading-font" style="font-size: 4.5rem; margin-bottom: 1.5rem;">Crafted with Care</h2>
+                <p class="font-light tracking-widest uppercase" style="font-size: 11px; opacity: 0.9; line-height: 2;">A spontaneous teenage road trip to Tehran introduced Robin Gray to the world of rugs.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section container">
+        <div class="latest-header reveal">
+            <h2 class="heading-font" style="font-size: 3.5rem;">Latest Designs</h2>
+            <a href="#" class="btn-link">See More Design</a>
+        </div>
+        
+        <div class="gallery-asymmetric">
+            <a href="isla-new" class="design-card reveal">
+                <div class="design-img-wrapper">
+                    <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/a201a0fa-caee-4f67-b6d9-784b0e075dc3/ISLA%2Bteal%2Bblush%2B%28Visualization%29.png?format=300w" alt="Isla">
+                    <div class="design-overlay"></div>
+                </div>
+                <h4 class="uppercase tracking-widest design-title">Isla (New)</h4>
+            </a>
+            <a href="#" class="design-card reveal reveal-delay-1">
+                <div class="design-img-wrapper">
+                    <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/00dc1bcc-e823-4873-9a1c-ff7eb12fcadb/gray-rug-intersect-taupe-grey.webp?format=300w" alt="Intersect">
+                    <div class="design-overlay"></div>
+                </div>
+                <h4 class="uppercase tracking-widest design-title">Intersect</h4>
+            </a>
+            <a href="#" class="design-card reveal reveal-delay-2">
+                <div class="design-img-wrapper">
+                    <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/14c7db56-610a-4328-8f1b-e950e9f1c76d/TRILOGY%2Bblue%2Bblack%2BII%2B%28Visualization%29%2Bcopy.webp?format=300w" alt="Trilogy">
+                    <div class="design-overlay"></div>
+                </div>
+                <h4 class="uppercase tracking-widest design-title">Trilogy</h4>
+            </a>
+            <a href="#" class="design-card reveal reveal-delay-3">
+                <div class="design-img-wrapper">
+                    <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/6019140d-7dad-422f-8c59-4641fe9a86df/_PAINT%2BSTRIPES%2Bblack%2Blite%2Baqua%2B3%28Visualization%29.png?format=300w" alt="Paint Stripes">
+                    <div class="design-overlay"></div>
+                </div>
+                <h4 class="uppercase tracking-widest design-title">Paint Stripes</h4>
+            </a>
+            <a href="#" class="design-card reveal">
+                <div class="design-img-wrapper">
+                    <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/1f4220ae-52ee-4b7e-996e-4169fbaa765d/KALEIDESCOPE%2Bshades%2Bof%2Bgrey%2B%28Visualization%29.webp?format=300w" alt="Kaleidoscope">
+                    <div class="design-overlay"></div>
+                </div>
+                <h4 class="uppercase tracking-widest design-title">Kaleidoscope</h4>
+            </a>
+            <a href="#" class="design-card reveal reveal-delay-1">
+                <div class="design-img-wrapper">
+                    <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/429458da-077a-4eaa-8530-af9f98575ad9/KAFES%2Bgrid%2Bsimple%2B2%2Bcharcoal%2Btaupe.webp?format=300w" alt="Shayan">
+                    <div class="design-overlay"></div>
+                </div>
+                <h4 class="uppercase tracking-widest design-title">Shayan Two</h4>
+            </a>
+            <a href="#" class="design-card reveal reveal-delay-2">
+                <div class="design-img-wrapper">
+                    <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/1bd46d8e-7f37-4278-ade7-4bd0e88bc548/SHATTERED%2Bblue%2Brust%2Bon%2Blight.webp?format=300w" alt="Shattered">
+                    <div class="design-overlay"></div>
+                </div>
+                <h4 class="uppercase tracking-widest design-title">Shattered</h4>
+            </a>
+            <a href="#" class="design-card reveal reveal-delay-3">
+                <div class="design-img-wrapper">
+                    <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/37dcdbe5-2b8f-4827-a481-b70930c2feff/MOROCCAN%2BSOLITARE%2Bblack%2Bwhite%2B29.webp?format=300w" alt="Moroccan Solitaire">
+                    <div class="design-overlay"></div>
+                </div>
+                <h4 class="uppercase tracking-widest design-title">Moroccan Solitaire</h4>
+            </a>
+        </div>
+
+        <div class="text-center reveal" style="margin-top: 5rem;">
+            <button class="btn-outline">View All Archives</button>
+        </div>
+    </section>
+
+    <section id="collections" class="collections-banner">
+        <div class="collections-overlay"></div>
+        <div class="collections-content reveal">
+            <h2 class="heading-font" style="font-size: 3.5rem; margin-bottom: 1rem;">Our Collections</h2>
+            <p class="uppercase tracking-widest" style="font-size: 11px; margin-bottom: 3rem;">A Curated Approach To The Floor</p>
+            <button class="btn-solid" style="color: var(--charcoal); background: #fff;">Explore Collections</button>
+        </div>
+    </section>
+
+    <section style="background: #FAFAF9; border-bottom: 1px solid #eaeaea; padding: 6rem 0;">
+        <div class="text-center reveal" style="margin-bottom: 3rem;">
+            <h2 class="text-taupe uppercase tracking-mega font-light" style="font-size: 11px;">Featured In</h2>
+        </div>
+        <div class="marquee-wrapper">
+            <div class="marquee-track">
+                <div class="marquee-set">
+                    <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/facc0d93-47d3-4831-bf8c-d6f468149828/Cover%2BMagazine.webp?format=300w" alt="Cover">
+                    <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/7e5a55c1-41e4-46bb-9437-bc62e8f5caad/Crate%2B%26%2BBarrel.webp?format=300w" alt="Crate & Barrel">
+                    <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/b2002435-cfa3-425a-951e-84a0d82ae032/Elle%2BDecor.webp?format=300w" alt="Elle Decor">
+                    <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/3ada3fb2-a5f0-4c5a-9006-18f92ca00c40/Interior%2BDesign%2BMagazine.webp?format=300w" alt="Interior Design">
+                    <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/d7105334-0178-45b7-b0c2-2009ac2c22b2/Luxe.webp?format=300w" alt="Luxe">
+                    <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/81debfd0-1465-4910-8ba4-420f82634581/Rug%2BInsider.webp?format=300w" alt="Rug Insider">
+                    <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/a74744c6-f046-4ce0-85e6-027bca3a1ca4/Santa%2BFean.webp?format=300w" alt="Santa Fean">
+                    <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/c0d81908-1540-4cbe-b488-947e3429b10b/Western%2BArt%2B%26%2BArchitecture.webp?format=300w" alt="Western Art">
+                </div>
+                <div class="marquee-set">
+                    <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/facc0d93-47d3-4831-bf8c-d6f468149828/Cover%2BMagazine.webp?format=300w" alt="Cover">
+                    <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/7e5a55c1-41e4-46bb-9437-bc62e8f5caad/Crate%2B%26%2BBarrel.webp?format=300w" alt="Crate & Barrel">
+                    <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/b2002435-cfa3-425a-951e-84a0d82ae032/Elle%2BDecor.webp?format=300w" alt="Elle Decor">
+                    <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/3ada3fb2-a5f0-4c5a-9006-18f92ca00c40/Interior%2BDesign%2BMagazine.webp?format=300w" alt="Interior Design">
+                    <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/d7105334-0178-45b7-b0c2-2009ac2c22b2/Luxe.webp?format=300w" alt="Luxe">
+                    <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/81debfd0-1465-4910-8ba4-420f82634581/Rug%2BInsider.webp?format=300w" alt="Rug Insider">
+                    <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/a74744c6-f046-4ce0-85e6-027bca3a1ca4/Santa%2BFean.webp?format=300w" alt="Santa Fean">
+                    <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/c0d81908-1540-4cbe-b488-947e3429b10b/Western%2BArt%2B%26%2BArchitecture.webp?format=300w" alt="Western Art">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section container split-section">
+        <div class="split-img reveal">
+            <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/1699ed5c-9048-4e5b-877b-993ad66597d2/56+%281%29.png?format=1000w" alt="Robin Gray">
+        </div>
+        <div class="split-text reveal reveal-delay-1">
+            <h2 class="heading-font" style="font-size: 4rem; margin-bottom: 2rem;">Adventurous Beginnings</h2>
+            <p class="font-light" style="line-height: 1.8; color: #555; margin-bottom: 3rem; font-size: 15px;">
+                Gray launched her firm in 2004. She designs from her studio in Santa Fe while often visiting her weaving partners in Nepal and India. The end result of this worldwide enterprise is a collection of vibrant and original handmade contemporary rugs made with only the highest quality materials, and the utmost ethical standards.
+            </p>
+            <button class="btn-outline">Discover The Origin</button>
+        </div>
+    </section>
+
+    <footer id="showrooms" class="footer">
+        <div class="container reveal">
+            
+            <div class="footer-header">
+                <h2 class="heading-font" style="font-size: 3.5rem; margin-bottom: 0.5rem; color: #fff;">Showrooms</h2>
+                <p class="font-light">Experience our collections in person.</p>
+            </div>
+
+            <div class="showrooms-grid">
+                <div class="showroom-card">
+                    <h4 class="uppercase">Santa Fe</h4>
+                    <p>The Rugman of Santa Fe<br>505 988 2393</p>
+                </div>
+                <div class="showroom-card">
+                    <h4 class="uppercase">Toronto</h4>
+                    <p>Weaver's Art<br>416 929 7929</p>
+                </div>
+                <div class="showroom-card">
+                    <h4 class="uppercase">Winter Park, FL</h4>
+                    <p>Carpet Source of Winter Park<br>407 539 2982</p>
+                </div>
+                <div class="showroom-card">
+                    <h4 class="uppercase">San Francisco</h4>
+                    <p>Woven Designs<br>415 552 5897</p>
+                </div>
+                <div class="showroom-card">
+                    <h4 class="uppercase">Los Angeles</h4>
+                    <p>ALT for LIVING<br>323 406 6335</p>
+                </div>
+                <div class="showroom-card">
+                    <h4 class="uppercase">Salt Lake City</h4>
+                    <p>Regency Royale<br>801 575 6525</p>
+                </div>
+                <div class="showroom-card">
+                    <h4 class="uppercase">New York City</h4>
+                    <p>ALT For Living<br>212 431 1000</p>
+                </div>
+                <div class="showroom-card explore-card" onclick="window.location.href='#'">
+                    <a href="#" class="uppercase">Explore More Showrooms <span style="font-family: Arial;">⟶</span></a>
+                </div>
+            </div>
+
+            <div class="media-inquiry">
+                Media and other inquiries may contact us at <a href="mailto:queries@robingraydesign.com">queries@robingraydesign.com</a>
+            </div>
+
+            <div class="footer-bottom reveal reveal-delay-1">
+                <div style="width: 100%; max-width: 400px;">
+                    <h3 class="heading-font" style="font-size: 1.8rem;">Sign up to receive news & updates</h3>
+                    <div class="email-input">
+                        <input type="email" placeholder="Email Address">
+                        <button class="uppercase text-taupe tracking-widest" style="background: none; border: none; cursor: pointer; font-size: 11px;">Send</button>
+                    </div>
+                </div>
+                
+                <div style="text-align: right;">
+                    <div class="footer-logos">
+                        <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/ef22234e-d8be-419b-a48a-75fbc1480b5f/GoodWeave_Logo.png?format=300w" alt="GoodWeave" class="goodweave">
+                        <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/60f1f401-93e2-4047-9114-40e1d712035f/d+%281%29+%281%29.png?format=1500w" alt="Logo" class="main-logo">
+                    </div>
+                    <p style="font-size: 10px; color: #666; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px;">
+                        © 2026 Robin Gray Design. Certified GoodWeave.
+                    </p>
+                    <p style="font-size: 10px; color: #444; letter-spacing: 1px; text-transform: uppercase;">
+                        Made By <a href="http://www.skyloftdigital.com" target="_blank" style="color: var(--taupe); text-decoration: none;">Skyloft Digital</a>
+                    </p>
+                    
+                    <div class="social-icons">
+                        <a href="#" aria-label="Instagram">
+                            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                        </a>
+                        <a href="#" aria-label="Pinterest">
+                            <svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.372 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.688 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345l-.279 1.14c-.038.154-.127.189-.286.115-1.068-.498-1.736-2.063-1.736-3.323 0-2.708 1.968-5.197 5.679-5.197 2.985 0 5.312 2.128 5.312 4.976 0 2.969-1.871 5.357-4.47 5.357-1.054 0-2.046-.548-2.384-1.198l-.649 2.47c-.234.895-.873 2.015-1.3 2.698C9.467 23.755 10.708 24 12 24c6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12z"/></svg>
+                        </a>
+                        <a href="#" aria-label="Facebook">
+                            <svg viewBox="0 0 24 24"><path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.593 1.323-1.325V1.325C24 .593 23.407 0 22.675 0z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 1. Navigation Scroll Detection
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > window.innerHeight - 80) navbar.classList.add('scrolled');
+            else navbar.classList.remove('scrolled');
+        });
+
+        // 2. Hero Engine (Crossfade + Swipe)
+        const hero = document.getElementById('hero-carousel');
+        const heroImages = document.querySelectorAll('.hero-img');
+        let currentImg = 0;
+        let isDragging = false;
+        let startPos = 0;
+
+        function changeSlide(direction) {
+            heroImages[currentImg].classList.remove('active');
+            currentImg = (currentImg + direction + heroImages.length) % heroImages.length;
+            heroImages[currentImg].classList.add('active');
+            resetAutoSlide();
+        }
+
+        let autoSlide = setInterval(() => changeSlide(1), 5000);
+        function resetAutoSlide() {
+            clearInterval(autoSlide);
+            autoSlide = setInterval(() => changeSlide(1), 5000);
+        }
+
+        hero.addEventListener('touchstart', (e) => { startPos = e.touches[0].clientX; });
+        hero.addEventListener('touchend', (e) => {
+            const diff = e.changedTouches[0].clientX - startPos;
+            if (diff > 50) changeSlide(-1);
+            if (diff < -50) changeSlide(1); 
+        });
+
+        hero.addEventListener('mousedown', (e) => { isDragging = true; startPos = e.clientX; });
+        hero.addEventListener('mouseup', (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            const diff = e.clientX - startPos;
+            if (diff > 50) changeSlide(-1);
+            if (diff < -50) changeSlide(1);
+        });
+        hero.addEventListener('mouseleave', () => { isDragging = false; });
+
+        // 3. Improvised Search Overlay Logic
+        const searchBtn = document.getElementById('search-btn');
+        const closeBtn = document.getElementById('close-search');
+        const searchOverlay = document.getElementById('search-overlay');
+        const searchInput = document.getElementById('search-input-field');
+        const searchStatus = document.getElementById('search-status');
+
+        function resetSearch() {
+            searchOverlay.style.opacity = '0';
+            setTimeout(() => {
+                searchOverlay.style.display = 'none';
+                document.body.style.overflow = 'auto'; 
+                searchInput.value = '';
+                searchInput.disabled = false;
+                searchInput.style.opacity = '1';
+                searchStatus.style.opacity = '0';
+            }, 500);
+        }
+
+        searchBtn.addEventListener('click', () => {
+            searchOverlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; 
+            setTimeout(() => { searchOverlay.style.opacity = '1'; searchInput.focus(); }, 10);
+        });
+        closeBtn.addEventListener('click', resetSearch);
+        
+        searchInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter' && searchInput.value.trim() !== '') {
+                searchInput.disabled = true;
+                searchInput.style.opacity = '0.2';
+                searchStatus.style.opacity = '1';
+                
+                // Simulated Terminal Experience
+                searchStatus.innerHTML = `Querying global archives for "${searchInput.value}"... <span class="blink-cursor">_</span>`;
+                
+                setTimeout(() => { 
+                    searchStatus.innerHTML = `MATCHES FOUND IN PRIVATE REGISTRY. REDIRECTING...`;
+                    setTimeout(() => { resetSearch(); }, 2000);
+                }, 1500);
+            }
+        });
+
+        // 4. Scroll Reveal Animations (Intersection Observer)
+        const reveals = document.querySelectorAll('.reveal');
+        const revealOptions = { threshold: 0.15, rootMargin: "0px 0px -50px 0px" };
+        const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); 
+                }
+            });
+        }, revealOptions);
+        reveals.forEach(reveal => { revealOnScroll.observe(reveal); });
+
+        // 5. Subtle Parallax Effect on Specific Images
+        const parallaxImg = document.getElementById('parallax-img');
+        window.addEventListener('scroll', () => {
+            let scrolled = window.pageYOffset;
+            if(parallaxImg) parallaxImg.style.transform = `translateY(${scrolled * 0.08 - 200}px)`;
+        });
+    </script>
+</body>
+</html>
