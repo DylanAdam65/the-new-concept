@@ -277,25 +277,26 @@
         /* --- FOOTER SECTION --- */
         .footer { 
             background: var(--charcoal); color: #fff; 
-            padding: 6vh 2rem 4vh 2rem; 
-            height: auto; min-height: 0;
-            display: flex; align-items: center; justify-content: center;
+            padding: 5vh 2rem; /* Adjusted for better viewport fit */
+            min-height: 100vh; /* Forces the footer to be at least a full screen height */
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
         .footer .container { 
-            display: flex; flex-direction: column; gap: 3rem; width: 100%; max-width: 1300px;
+            display: flex; flex-direction: column; justify-content: space-between; 
+            height: 100%; width: 100%; max-width: 1300px;
         }
-        .footer-header { text-align: center; }
+        .footer-header { text-align: center; margin-bottom: 2rem; }
         .footer-header h2 { font-size: 3.5rem; margin-bottom: 0.5rem; color: #fff; }
         .footer-header p { color: #999; font-size: 14px; }
 
-        /* SHOWROOMS GRID - FIXED CARD SIZE, REDUCED GAP */
+        /* SHOWROOMS GRID - FIXED CARD SIZE, REDUCED GAP, NO BORDERS */
         .showrooms-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;
-            padding-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem;
+            padding-bottom: 0; border-bottom: none;
         }
         .showroom-card { 
-            background: rgba(255,255,255,0.03); padding: 2rem; text-align: center; border-radius: 4px;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 180px;
+            background: rgba(255,255,255,0.03); padding: 1.5rem; text-align: center; border-radius: 4px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 150px;
         }
         .showroom-card h4 { color: var(--taupe); font-size: 13px; letter-spacing: 0.2em; margin-bottom: 0.5rem; }
         .showroom-card p { font-size: 14px; color: #aaa; font-weight: 300; line-height: 1.6; margin: 0; }
@@ -308,16 +309,32 @@
         .explore-card a { color: var(--taupe); font-size: 12px; text-decoration: none; letter-spacing: 0.2em; transition: color 0.4s ease; }
         .explore-card:hover { border-color: var(--taupe); background: rgba(255,255,255,0.01); }
 
-        .media-inquiry { text-align: center; font-size: 11px; color: #aaa; letter-spacing: 0.1em; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        /* NO BORDERS ON MEDIA INQUIRY */
+        .media-inquiry { 
+            text-align: center; font-size: 11px; color: #aaa; letter-spacing: 0.1em; 
+            margin: 2rem 0; padding: 0; border-bottom: none; 
+        }
         .media-inquiry a { color: var(--taupe); text-decoration: none; }
 
+        /* FOOTER BOTTOM ROW - CLEAN & ALIGNED */
         .footer-bottom { 
-            display: flex; justify-content: space-between; align-items: flex-end; 
-            gap: 2rem; flex-wrap: wrap; 
+            display: flex; justify-content: space-between; align-items: center; 
+            gap: 2rem; flex-wrap: wrap; margin-top: auto;
         }
-        .email-input { display: flex; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 0.5rem; margin-top: 1.5rem; }
-        .email-input input { background: transparent; border: none; color: #fff; outline: none; flex: 1; font-size: 12px; font-weight: 300; }
         
+        /* CLEAN, SLEEK NEWSLETTER INPUT */
+        .newsletter-section { flex: 1; max-width: 400px; display: flex; flex-direction: column; justify-content: center; }
+        .newsletter-section h3 { font-size: 1.4rem; margin-bottom: 0.5rem; color: #fff; }
+        .email-input { display: flex; border-bottom: 1px solid rgba(255,255,255,0.4); padding-bottom: 8px; margin-top: 10px; }
+        .email-input input { background: transparent; border: none; color: #fff; outline: none; flex: 1; font-size: 13px; font-weight: 300; }
+        .email-input input::placeholder { color: rgba(255,255,255,0.5); }
+        .email-input button { 
+            background: none; border: none; cursor: pointer; font-size: 11px; font-weight: 500;
+            color: var(--taupe); text-transform: uppercase; letter-spacing: 0.2em; transition: color 0.3s ease; 
+        }
+        .email-input button:hover { color: #fff; }
+        
+        .footer-right { text-align: right; }
         .footer-logos { display: flex; gap: 3rem; align-items: center; justify-content: flex-end; margin-bottom: 1rem; }
         .footer-logos img.goodweave { height: 45px; filter: brightness(0) invert(1) !important; opacity: 1 !important; } 
         .footer-logos img.main-logo { width: 160px; filter: brightness(0) invert(1) !important; opacity: 1 !important; }
@@ -344,12 +361,11 @@
             .vision-text { font-size: 1.8rem; }
             .collections-content { padding: 3rem 2rem; margin: 0 1rem; }
             .latest-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
-            .footer-logos { justify-content: flex-start; margin-top: 3rem; }
+            .footer-logos { justify-content: flex-start; margin-top: 2rem; }
             .social-icons { justify-content: flex-start; }
             #search-pill-center { padding: 1rem 2rem; }
             #search-pill-center input { width: 220px; font-size: 14px; }
-            .design-content { left: 2rem; bottom: 3rem; }
-            .design-content h3 { font-size: 3rem !important; }
+            .footer-right { text-align: left; margin-top: 2rem; }
         }
     </style>
 </head>
@@ -615,15 +631,15 @@
             </div>
 
             <div class="footer-bottom reveal reveal-delay-1">
-                <div style="flex: 1; max-width: 500px;">
-                    <h3 class="heading-font" style="font-size: 1.8rem; white-space: nowrap;">Sign up to receive news & updates</h3>
+                <div class="newsletter-section">
+                    <h3 class="heading-font">Sign up for news & updates</h3>
                     <div class="email-input">
-                        <input type="email" placeholder="Email Address">
-                        <button class="uppercase text-taupe tracking-widest" style="background: none; border: none; cursor: pointer; font-size: 11px;">Send</button>
+                        <input type="email" placeholder="Your Email Address">
+                        <button class="uppercase text-taupe tracking-widest">Subscribe</button>
                     </div>
                 </div>
                 
-                <div style="text-align: right;">
+                <div class="footer-right">
                     <div class="footer-logos">
                         <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/ef22234e-d8be-419b-a48a-75fbc1480b5f/GoodWeave_Logo.png?format=300w" alt="GoodWeave" class="goodweave">
                         <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/60f1f401-93e2-4047-9114-40e1d712035f/d+%281%29+%281%29.png?format=1500w" alt="Logo" class="main-logo">
