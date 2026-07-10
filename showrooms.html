@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robin Gray Design | Showrooms</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- CORE VARIABLES & RESET --- */
+        :root {
+            --alabaster: #FCFCFA;
+            --charcoal: #0a0a0a;
+            --taupe: #9A8A78;
+            --font-sans: 'Inter', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        
+        body {
+            background-color: var(--alabaster);
+            color: var(--charcoal);
+            font-family: var(--font-sans);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- ADVANCED ANIMATIONS --- */
+        @keyframes headerSlideDown {
+            0% { transform: translateY(-100%); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .reveal {
+            opacity: 0; transform: translateY(40px);
+            transition: all 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+
+        /* --- TYPOGRAPHY --- */
+        .heading-font { font-family: var(--font-sans); font-weight: 300; letter-spacing: -0.01em; }
+        .font-light { font-weight: 300; }
+        .text-taupe { color: var(--taupe); }
+        .tracking-widest { letter-spacing: 0.2em; }
+        .uppercase { text-transform: uppercase; }
+
+        /* --- NAVIGATION --- */
+        nav {
+            position: fixed; top: 0; left: 0; width: 100%;
+            z-index: 50; padding: 1.5rem 4rem;
+            display: flex; justify-content: space-between; align-items: center;
+            color: #fff;
+            transition: background 0.5s cubic-bezier(0.16, 1, 0.3, 1), padding 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 100%);
+            animation: headerSlideDown 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        nav.scrolled {
+            background-color: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            padding: 1rem 4rem; box-shadow: 0 4px 30px rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .nav-links { display: flex; gap: 3.5rem; font-size: 12px; font-weight: 400; align-items: center; }
+        
+        .nav-links a, .nav-links button {
+            color: #fff; text-decoration: none; position: relative;
+            background: none; border: none; cursor: pointer;
+            transition: all 0.3s ease; letter-spacing: 0.2em;
+            font-family: inherit; font-size: inherit; font-weight: inherit;
+            padding: 0; outline: none;
+        }
+        
+        .nav-links a::after, .nav-links button::after {
+            content: ''; position: absolute; bottom: -4px; left: 0; width: 100%; height: 1px;
+            background: var(--taupe); transform: scaleX(0); transform-origin: right;
+            transition: transform 0.4s ease;
+        }
+        
+        .nav-links a:hover::after, .nav-links button:hover::after { 
+            transform: scaleX(1); transform-origin: left; 
+        }
+        .nav-links a:hover, .nav-links button:hover { color: var(--taupe); }
+
+        .logo img {
+            width: 220px; transition: all 0.4s ease; display: block;
+            filter: brightness(0) invert(1); opacity: 1;
+        }
+        .logo:hover img { transform: scale(1.015); }
+
+        /* --- CENTERED GLASSMORPHIC SEARCH OVERLAY --- */
+        #search-overlay-dim {
+            position: fixed; inset: 0; width: 100%; height: 100vh;
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            z-index: 100; display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.4s ease, backdrop-filter 0.4s ease;
+        }
+        #search-overlay-dim.active { opacity: 1; pointer-events: auto; }
+        
+        #search-pill-center {
+            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 50px;
+            padding: 1.5rem 3.5rem; display: flex; align-items: center; box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+            transform: scale(0.8) translateY(20px); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        #search-overlay-dim.active #search-pill-center { transform: scale(1) translateY(0); }
+        
+        #search-pill-center input {
+            background: transparent; border: none; outline: none; color: #fff;
+            font-family: var(--font-sans); font-size: 16px; width: 350px; text-align: center;
+            letter-spacing: 0.15em; text-transform: uppercase;
+        }
+        #search-pill-center input::placeholder { color: rgba(255,255,255,0.7); text-transform: uppercase; }
+
+        /* --- SHOWROOMS PAGE SPECIFIC STYLES --- */
+        
+        .showrooms-header-minimal {
+            background-color: var(--charcoal);
+            background: radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 100%);
+            min-height: 35vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            color: #fff;
+            padding: 7rem 2rem 3rem 2rem;
+            position: relative;
+        }
+        .showrooms-header-minimal h1 {
+            font-size: 4.5rem;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+
+        .showrooms-intro {
+            padding: 6rem 2rem 3rem 2rem;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .showrooms-intro p {
+            font-size: 15px; line-height: 1.8; color: #444; font-weight: 300; letter-spacing: 0.02em;
+        }
+
+        /* Enhanced Directory Grid */
+        .directory-container {
+            max-width: 1300px; margin: 0 auto; padding: 2rem 2rem 6rem 2rem;
+        }
+        .directory-grid {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 3rem;
+        }
+        .directory-card {
+            width: calc(33.333% - 2rem); min-width: 320px;
+            background: #fff; padding: 4.5rem 2.5rem; text-align: center;
+            border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.04);
+            transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+            display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
+            position: relative; /* Added for absolute link overlay */
+        }
+        .directory-card:hover {
+            transform: translateY(-8px); 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+            border-color: var(--taupe); /* Subtle taupe hover border */
+        }
+        
+        /* Invisible Overlay Link making whole card clickable */
+        .card-full-link {
+            position: absolute; inset: 0; z-index: 1; border-radius: 4px;
+        }
+
+        .directory-card h3 {
+            font-size: 1.15rem; letter-spacing: 0.15em; color: var(--charcoal); 
+            font-weight: 500;
+            margin-bottom: 1.5rem; text-transform: uppercase;
+            font-family: var(--font-sans);
+        }
+        .directory-card p {
+            font-size: 14px; line-height: 1.8; color: #555; font-weight: 300; margin-bottom: 1.5rem;
+        }
+
+        /* Styled Contact Links with Icons */
+        .contact-links {
+            position: relative; z-index: 2; /* Sits above full card link */
+            display: flex; flex-direction: column; align-items: center; gap: 0.75rem;
+        }
+        .contact-links a {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            color: var(--charcoal); text-decoration: none; 
+            font-size: 13px; font-weight: 400; transition: color 0.3s ease; 
+        }
+        .contact-links a svg {
+            width: 14px; height: 14px; stroke-width: 1.5px; opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+        .contact-links a:hover { color: var(--taupe); }
+        .contact-links a:hover svg { opacity: 1; stroke: var(--taupe); }
+
+        .media-inquiry-light { 
+            text-align: center; font-size: 12px; color: var(--charcoal); letter-spacing: 0.05em; 
+            margin: 2rem 0 6rem 0; font-weight: 400;
+        }
+
+        /* --- FOOTER SECTION --- */
+        .footer { 
+            background: var(--charcoal); color: #fff; 
+            padding: 5vh 2rem; 
+            min-height: auto; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+        .footer .container { 
+            display: flex; flex-direction: column; justify-content: space-between; 
+            height: 100%; width: 100%; max-width: 1300px;
+        }
+
+        .newsletter-section h3 { font-size: 1.4rem; margin-bottom: 2.0rem; color: #fff; }
+        .email-input { display: flex; border-bottom: 1px solid rgba(255,255,255,0.4); padding-bottom: 8px; margin-top: 10px; }
+        .email-input input { background: transparent; border: none; color: #fff; outline: none; flex: 1; font-size: 13px; font-weight: 300; }
+        .email-input input::placeholder { color: rgba(255,255,255,0.5); }
+        .email-input button { 
+            background: none; border: none; cursor: pointer; font-size: 11px; font-weight: 500;
+            color: var(--taupe); text-transform: uppercase; letter-spacing: 0.2em; transition: color 0.3s ease; 
+        }
+        .email-input button:hover { color: #fff; }
+        
+        .footer-logos { display: flex; gap: 3rem; align-items: center; margin-bottom: 1rem; }
+        .footer-logos img.goodweave { height: 45px; filter: brightness(0) invert(1) !important; opacity: 1 !important; } 
+        .footer-logos img.main-logo { width: 160px; filter: brightness(0) invert(1) !important; opacity: 1 !important; }
+
+        .social-icons { display: flex; gap: 1.2rem; }
+        .social-icons a { color: #888; transition: color 0.3s ease; }
+        .social-icons a:hover { color: var(--taupe); }
+        .social-icons svg { width: 16px; height: 16px; fill: currentColor; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1100px) {
+            .directory-card { width: calc(50% - 1.5rem); }
+        }
+        @media (max-width: 768px) {
+            nav, nav.scrolled { padding: 1.2rem 2rem; }
+            .nav-links { display: none; }
+            .logo img { width: 150px; }
+            .directory-card { width: 100%; }
+            .footer-logos { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+            .showrooms-header-minimal h1 { font-size: 3rem; }
+            .showrooms-header-minimal { min-height: 25vh; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav id="navbar">
+        <div class="nav-links uppercase tracking-widest">
+            <a href="collections.html">Collection</a>
+            <a href="about.html">About</a>
+        </div>
+        <a href="index.html" class="logo">
+            <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/60f1f401-93e2-4047-9114-40e1d712035f/d+%281%29+%281%29.png?format=1500w" alt="Robin Gray">
+        </a>
+        <div class="nav-links uppercase tracking-widest">
+            <a href="showrooms.html">Showrooms</a>
+            <button id="search-btn" class="uppercase tracking-widest">Search</button>
+        </div>
+    </nav>
+
+    <div id="search-overlay-dim">
+        <div id="search-pill-center">
+            <input type="text" id="main-search-input" placeholder="Design or Color...">
+        </div>
+    </div>
+
+    <main>
+        <header class="showrooms-header-minimal">
+            <div class="reveal">
+                <h1 class="heading-font">Showrooms</h1>
+                <p class="uppercase tracking-widest text-taupe font-light" style="font-size: 11px;">Robin Gray Design</p>
+            </div>
+        </header>
+
+        <section class="showrooms-intro reveal">
+            <p>
+                Please contact one of our showrooms below to explore our rug collections, or to begin the journey of creating your one-of-a-kind custom piece.<br>Together we will design the right shape, size, colors, materials and patterns for your space.
+            </p>
+        </section>
+
+        <!-- Directory Grid -->
+        <section class="directory-container">
+            <div class="directory-grid">
+                
+                <!-- Winter Park -->
+                <div class="directory-card reveal">
+                    <a href="https://maps.google.com/?q=505+N.+Virginia+Avenue,+Winter+Park,+FL+32789" target="_blank" class="card-full-link" aria-label="View Winter Park Showroom on Map"></a>
+                    <h3>Winter Park, FL</h3>
+                    <p>Carpet Source of Winter Park<br>505 N. Virginia Avenue<br>Winter Park, FL 32789</p>
+                    <div class="contact-links">
+                        <a href="tel:4075392982">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                            407 539 2982
+                        </a>
+                        <a href="mailto:louis@csowp.com">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+                            louis@csowp.com
+                        </a>
+                        <a href="mailto:amanda@csowp.com">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+                            amanda@csowp.com
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Toronto -->
+                <div class="directory-card reveal reveal-delay-1">
+                    <a href="http://weaversart.com" target="_blank" class="card-full-link" aria-label="Visit Weaver's Art Website"></a>
+                    <h3>Toronto</h3>
+                    <p>Weaver's Art<br>1400 Castlefield Ave<br>Toronto, Ontario M6B 4C4</p>
+                    <div class="contact-links">
+                        <a href="tel:8882291499">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                            <span style="font-weight:300; opacity:0.8; margin-right:4px;">toll free</span> 888 229 1499
+                        </a>
+                        <a href="tel:4169297929">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                            416 929 7929
+                        </a>
+                        <a href="http://weaversart.com" target="_blank">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            weaversart.com
+                        </a>
+                        <a href="mailto:info@weaversart.com">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+                            info@weaversart.com
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Santa Fe -->
+                <div class="directory-card reveal reveal-delay-2">
+                    <a href="https://maps.google.com/?q=130+Lincoln+Avenue,+Santa+Fe,+NM+87501" target="_blank" class="card-full-link" aria-label="View Santa Fe Showroom on Map"></a>
+                    <h3>Santa Fe</h3>
+                    <p>The Rugman of Santa Fe<br>130 Lincoln Avenue<br>Suite A<br>Santa Fe, NM 87501</p>
+                    <div class="contact-links">
+                        <a href="tel:5059882393">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                            505 988 2393
+                        </a>
+                        <a href="mailto:rugs@therugmansantafe.com">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+                            rugs@therugmansantafe.com
+                        </a>
+                    </div>
+                </div>
+
+                <!-- San Francisco -->
+                <div class="directory-card reveal">
+                    <a href="http://wovendesigns-sf.com" target="_blank" class="card-full-link" aria-label="Visit San Francisco Website"></a>
+                    <h3>San Francisco</h3>
+                    <p>Woven Designs<br>151 Vermont Street Suite 11<br>San Francisco, CA 94103</p>
+                    <div class="contact-links">
+                        <a href="tel:4155525897">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                            415 552 5897
+                        </a>
+                        <a href="http://wovendesigns-sf.com" target="_blank">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            wovendesigns-sf.com
+                        </a>
+                        <a href="mailto:anna@wovendesigns-sf.com">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+                            anna@wovendesigns-sf.com
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Los Angeles -->
+                <div class="directory-card reveal reveal-delay-1">
+                    <a href="https://maps.google.com/?q=808+N+La+Cienega+Blvd,+West+Hollywood,+CA+90069" target="_blank" class="card-full-link" aria-label="View Los Angeles Showroom on Map"></a>
+                    <h3>Los Angeles</h3>
+                    <p>ALT for LIVING<br>808 N La Cienega Blvd<br>West Hollywood, CA 90069</p>
+                    <div class="contact-links">
+                        <a href="tel:3234066335">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                            323 406 6335
+                        </a>
+                        <a href="mailto:danny@altforliving.com">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+                            danny@altforliving.com
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Salt Lake City -->
+                <div class="directory-card reveal reveal-delay-2">
+                    <a href="http://regencyroyale.com" target="_blank" class="card-full-link" aria-label="Visit Salt Lake City Website"></a>
+                    <h3>Salt Lake City</h3>
+                    <p>Regency Royale<br>331 South Rio Grande<br>Salt Lake City, Utah 84101</p>
+                    <div class="contact-links">
+                        <a href="tel:8015756525">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                            801 575 6525
+                        </a>
+                        <a href="http://regencyroyale.com" target="_blank">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            regencyroyale.com
+                        </a>
+                        <a href="mailto:kathy@regencyroyale.com">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+                            kathy@regencyroyale.com
+                        </a>
+                    </div>
+                </div>
+
+                <!-- New York City -->
+                <div class="directory-card reveal">
+                    <a href="http://altforliving.com" target="_blank" class="card-full-link" aria-label="Visit New York City Website"></a>
+                    <h3>New York City</h3>
+                    <p>ALT For Living<br>12 East 20th Street, 5th Floor<br>New York, NY 10003</p>
+                    <div class="contact-links">
+                        <a href="tel:2124311000">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                            212 431 1000
+                        </a>
+                        <a href="http://altforliving.com" target="_blank">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                            altforliving.com
+                        </a>
+                        <a href="mailto:betsy@altforliving.com">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+                            betsy@altforliving.com
+                        </a>
+                        <a href="mailto:brent@altforliving.com">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+                            brent@altforliving.com
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Robin Gray Design llc -->
+                <div class="directory-card reveal reveal-delay-1">
+                    <a href="mailto:robin@robingraydesign.com" class="card-full-link" aria-label="Email Robin Gray Design"></a>
+                    <h3>Robin Gray Design llc</h3>
+                    <p>Design Studio/Office<br>Richmond, Virginia</p>
+                    <div class="contact-links">
+                        <a href="tel:5056002469">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                            <span style="font-weight:300; opacity:0.8; margin-right:4px;">tel</span> 505 600 2469
+                        </a>
+                        <a href="mailto:robin@robingraydesign.com">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+                            robin@robingraydesign.com
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Media Inquiry -->
+        <div class="media-inquiry-light reveal">
+            Media and other inquiries may contact Robin Gray
+        </div>
+        
+    </main>
+
+    <!-- FOOTER WITH REDUCED TOP PADDING -->
+    <footer class="footer" style="padding-top: 2rem;">
+        <div class="container reveal">
+            <div class="footer-bottom" style="display: flex; flex-direction: column; gap: 3rem; width: 100%; margin-top: auto;">
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 2rem;">
+                    <div class="newsletter-section" style="margin: 0; max-width: 400px; width: 100%;">
+                        <h3 class="heading-font">Sign up for news & updates</h3>
+                        <div class="email-input">
+                            <input type="email" placeholder="Your Email Address">
+                            <button class="uppercase text-taupe tracking-widest">Subscribe</button>
+                        </div>
+                    </div>
+                    
+                    <div class="footer-logos" style="margin: 0;">
+                        <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/ef22234e-d8be-419b-a48a-75fbc1480b5f/GoodWeave_Logo.png?format=300w" alt="GoodWeave" class="goodweave">
+                        <a href="index.html"><img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/60f1f401-93e2-4047-9114-40e1d712035f/d+%281%29+%281%29.png?format=1500w" alt="Logo" class="main-logo"></a>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%; flex-wrap: wrap; gap: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem;">
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <p style="font-size: 10px; color: #666; letter-spacing: 1px; text-transform: uppercase; margin: 0;">
+                            © 2026 Robin Gray Design. Certified GoodWeave.
+                        </p>
+                        <p style="font-size: 10px; color: #444; letter-spacing: 1px; text-transform: uppercase; margin: 0;">
+                            Made By <a href="http://www.skyloftdigital.com" target="_blank" style="color: var(--taupe); text-decoration: none;">Skyloft Digital</a>
+                        </p>
+                    </div>
+                    
+                    <div class="social-icons" style="margin: 0;">
+                        <a href="https://www.instagram.com/" target="_blank" aria-label="Instagram">
+                            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                        </a>
+                        <a href="https://www.pinterest.com/" target="_blank" aria-label="Pinterest">
+                            <svg viewBox="0 0 24 24"><path d="M16.292 5C10.536 5 7.48 8.866 7.48 13.077c0 1.955 1.039 4.392 2.707 5.168.253.118.387.064.443-.18.047-.185.273-1.089.373-1.511a.402.402 0 0 0-.095-.386c-.55-.667-.988-1.896-.988-3.041 0-2.942 2.228-5.787 6.021-5.787 3.28 0 5.571 2.23 5.571 5.426 0 3.61-1.82 6.108-4.191 6.108-1.309 0-2.291-1.081-1.978-2.413.378-1.584 1.106-3.298 1.106-4.438 0-1.026-.552-1.883-1.685-1.883-1.341 0-2.415 1.385-2.415 3.241 0 1.182.4 1.978.4 1.978s-1.323 5.593-1.563 6.634c-.413 1.765.051 4.625.094 4.876.021.134.172.18.252.066.129-.175 1.725-2.565 2.174-4.292l.828-3.171c.439.829 1.707 1.531 3.061 1.531 4.021 0 6.923-3.703 6.923-8.299C24.52 8.301 20.92 5 16.292 5z"/></svg>
+                        </a>
+                        <a href="https://www.facebook.com/" target="_blank" aria-label="Facebook">
+                            <svg viewBox="0 0 24 24"><path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.593 1.323-1.325V1.325C24 .593 23.407 0 22.675 0z"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > window.innerHeight - 80) navbar.classList.add('scrolled');
+            else navbar.classList.remove('scrolled');
+        });
+
+        const searchBtn = document.getElementById('search-btn');
+        const searchOverlayDim = document.getElementById('search-overlay-dim');
+        const searchPillCenter = document.getElementById('search-pill-center');
+        const searchInput = document.getElementById('main-search-input');
+
+        function openSearch(e) {
+            e.preventDefault();
+            searchOverlayDim.classList.add('active');
+            setTimeout(() => { searchInput.focus(); }, 100);
+        }
+
+        function closeSearch() {
+            searchOverlayDim.classList.remove('active');
+            searchInput.blur();
+        }
+
+        searchBtn.addEventListener('click', openSearch);
+
+        searchOverlayDim.addEventListener('click', (e) => {
+            if (!searchPillCenter.contains(e.target)) {
+                closeSearch();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && searchOverlayDim.classList.contains('active')) {
+                closeSearch();
+            }
+        });
+
+        const reveals = document.querySelectorAll('.reveal');
+        const revealOptions = { threshold: 0.15, rootMargin: "0px 0px -50px 0px" };
+        const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); 
+                }
+            });
+        }, revealOptions);
+        reveals.forEach(reveal => { revealOnScroll.observe(reveal); });
+    </script>
+</body>
+</html>
