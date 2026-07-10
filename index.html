@@ -27,10 +27,16 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* --- ADVANCED ANIMATIONS (Scroll Reveals) --- */
+        /* --- ADVANCED ANIMATIONS (Scroll Reveals & Header) --- */
+        @keyframes headerSlideDown {
+            0% { transform: translateY(-100%); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
         .reveal {
             opacity: 0; transform: translateY(40px);
-            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            /* Made animations slower (changed from 1.2s to 1.8s) */
+            transition: all 1.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .reveal.active { opacity: 1; transform: translateY(0); }
         .reveal-delay-1 { transition-delay: 0.1s; }
@@ -51,8 +57,10 @@
             z-index: 50; padding: 1.5rem 4rem;
             display: flex; justify-content: space-between; align-items: center;
             color: #fff;
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: background 0.5s cubic-bezier(0.16, 1, 0.3, 1), padding 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 100%);
+            /* Header Reveal Animation */
+            animation: headerSlideDown 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         nav.scrolled {
             background-color: rgba(10, 10, 10, 0.85);
@@ -277,8 +285,8 @@
         /* --- FOOTER SECTION --- */
         .footer { 
             background: var(--charcoal); color: #fff; 
-            padding: 5vh 2rem; /* Adjusted for better viewport fit */
-            min-height: 100vh; /* Forces the footer to be at least a full screen height */
+            padding: 5vh 2rem; 
+            min-height: 100vh; 
             display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
         .footer .container { 
@@ -316,15 +324,8 @@
         }
         .media-inquiry a { color: var(--taupe); text-decoration: none; }
 
-        /* FOOTER BOTTOM ROW - CLEAN & ALIGNED */
-        .footer-bottom { 
-            display: flex; justify-content: space-between; align-items: center; 
-            gap: 2rem; flex-wrap: wrap; margin-top: auto;
-        }
-        
         /* CLEAN, SLEEK NEWSLETTER INPUT */
-        .newsletter-section { flex: 1; max-width: 400px; display: flex; flex-direction: column; justify-content: center; }
-        .newsletter-section h3 { font-size: 1.4rem; margin-bottom: 0.5rem; color: #fff; }
+        .newsletter-section h3 { font-size: 1.4rem; margin-bottom: 2.0rem; color: #fff; }
         .email-input { display: flex; border-bottom: 1px solid rgba(255,255,255,0.4); padding-bottom: 8px; margin-top: 10px; }
         .email-input input { background: transparent; border: none; color: #fff; outline: none; flex: 1; font-size: 13px; font-weight: 300; }
         .email-input input::placeholder { color: rgba(255,255,255,0.5); }
@@ -334,12 +335,11 @@
         }
         .email-input button:hover { color: #fff; }
         
-        .footer-right { text-align: right; }
-        .footer-logos { display: flex; gap: 3rem; align-items: center; justify-content: flex-end; margin-bottom: 1rem; }
+        .footer-logos { display: flex; gap: 3rem; align-items: center; margin-bottom: 1rem; }
         .footer-logos img.goodweave { height: 45px; filter: brightness(0) invert(1) !important; opacity: 1 !important; } 
         .footer-logos img.main-logo { width: 160px; filter: brightness(0) invert(1) !important; opacity: 1 !important; }
 
-        .social-icons { display: flex; gap: 1.2rem; justify-content: flex-end; margin-top: 1rem; }
+        .social-icons { display: flex; gap: 1.2rem; }
         .social-icons a { color: #888; transition: color 0.3s ease; }
         .social-icons a:hover { color: var(--taupe); }
         .social-icons svg { width: 16px; height: 16px; fill: currentColor; }
@@ -365,7 +365,6 @@
             .social-icons { justify-content: flex-start; }
             #search-pill-center { padding: 1rem 2rem; }
             #search-pill-center input { width: 220px; font-size: 14px; }
-            .footer-right { text-align: left; margin-top: 2rem; }
         }
     </style>
 </head>
@@ -373,14 +372,14 @@
 
     <nav id="navbar">
         <div class="nav-links uppercase tracking-widest">
-            <a href="#collections">Collection</a>
-            <a href="#about">About</a>
+            <a href="collections.html">Collection</a>
+            <a href="about.html">About</a>
         </div>
-        <a href="/" class="logo">
+        <a href="index.html" class="logo">
             <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/60f1f401-93e2-4047-9114-40e1d712035f/d+%281%29+%281%29.png?format=1500w" alt="Robin Gray">
         </a>
         <div class="nav-links uppercase tracking-widest">
-            <a href="#showrooms">Showrooms</a>
+            <a href="showrooms.html">Showrooms</a>
             <button id="search-btn" class="uppercase tracking-widest">Search</button>
         </div>
     </nav>
@@ -397,6 +396,7 @@
         <img src="https://images.squarespace-cdn.com/content/699b55b9f68bfd2f93b6ca27/71df9171-dc2d-48b8-b388-dbaa0c3d58b9/Header+%284%29.png?content-type=image%2Fpng" class="hero-img">
         <img src="https://images.squarespace-cdn.com/content/699b55b9f68bfd2f93b6ca27/68fd7303-2053-4973-82ed-3220379c50c9/Header+%282%29.png?content-type=image%2Fpng" class="hero-img">
         <img src="https://images.squarespace-cdn.com/content/699b55b9f68bfd2f93b6ca27/4825a8af-1ab1-41d6-9a90-f9e41b4f91dc/Header+%287%29.png?content-type=image%2Fpng" class="hero-img">
+        <img src="hero image 1.png" class="hero-img">
         <div class="hero-gradient"></div>
     </header>
 
@@ -407,7 +407,7 @@
                 Robin Gray Design is a place where color & texture are woven with innovation & passion to create transformative works of art for the floor.
             </p>
             <div style="margin-top: 3rem;">
-                <a href="#" class="btn-link">Learn More</a>
+                <a href="/about" class="btn-link">Learn More</a>
             </div>
         </div>
     </section>
@@ -525,7 +525,7 @@
         </div>
 
         <div class="text-center reveal" style="margin-top: 5rem;">
-            <button class="btn-outline">View All Archives</button>
+            <a href="/collection" class="btn-outline">View All Archives</a>
         </div>
     </section>
 
@@ -537,7 +537,7 @@
             <p class="font-light" style="font-size: 15px; line-height: 1.8; margin-bottom: 3rem;">
                 Discover our diverse range of bespoke textiles, carefully curated to bring warmth, texture, and architectural harmony to any environment. Each collection tells a unique story of craftsmanship and heritage.
             </p>
-            <button class="btn-outline btn-outline-white">Explore Collections</button>
+            <a href="/collection" class="btn-outline btn-outline-white">Explore Collections</a>
         </div>
     </section>
 
@@ -580,7 +580,7 @@
             <p class="font-light" style="line-height: 1.8; color: #555; margin-bottom: 3rem; font-size: 15px;">
                 Gray launched her firm in 2004. She designs from her studio in Santa Fe while often visiting her weaving partners in Nepal and India. The end result of this worldwide enterprise is a collection of vibrant and original handmade contemporary rugs made with only the highest quality materials, and the utmost ethical standards.
             </p>
-            <button class="btn-outline">Discover The Origin</button>
+            <a href="/about" class="btn-outline">Discover The Origin</a>
         </div>
     </section>
 
@@ -621,8 +621,8 @@
                     <h4 class="uppercase">New York City</h4>
                     <p>ALT For Living<br>212 431 1000</p>
                 </div>
-                <div class="showroom-card explore-card" onclick="window.location.href='#'">
-                    <a href="#" class="uppercase">Explore More Showrooms <span style="font-family: Arial;">⟶</span></a>
+                <div class="showroom-card explore-card" onclick="window.location.href='/showrooms'">
+                    <a href="/showrooms" class="uppercase">Explore More Showrooms <span style="font-family: Arial;">⟶</span></a>
                 </div>
             </div>
 
@@ -630,39 +630,46 @@
                 Media and other inquiries may contact us at <a href="mailto:queries@robingraydesign.com">queries@robingraydesign.com</a>
             </div>
 
-            <div class="footer-bottom reveal reveal-delay-1">
-                <div class="newsletter-section">
-                    <h3 class="heading-font">Sign up for news & updates</h3>
-                    <div class="email-input">
-                        <input type="email" placeholder="Your Email Address">
-                        <button class="uppercase text-taupe tracking-widest">Subscribe</button>
+            <div class="footer-bottom reveal reveal-delay-1" style="display: flex; flex-direction: column; gap: 3rem; width: 100%; margin-top: auto;">
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 2rem;">
+                    <div class="newsletter-section" style="margin: 0; max-width: 400px; width: 100%;">
+                        <h3 class="heading-font">Sign up for news & updates</h3>
+                        <div class="email-input">
+                            <input type="email" placeholder="Your Email Address">
+                            <button class="uppercase text-taupe tracking-widest">Subscribe</button>
+                        </div>
+                    </div>
+                    
+                    <div class="footer-logos" style="margin: 0;">
+                        <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/ef22234e-d8be-419b-a48a-75fbc1480b5f/GoodWeave_Logo.png?format=300w" alt="GoodWeave" class="goodweave">
+                        <a href="index.html"><img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/60f1f401-93e2-4047-9114-40e1d712035f/d+%281%29+%281%29.png?format=1500w" alt="Logo" class="main-logo"></a>
                     </div>
                 </div>
-                
-                <div class="footer-right">
-                    <div class="footer-logos">
-                        <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/ef22234e-d8be-419b-a48a-75fbc1480b5f/GoodWeave_Logo.png?format=300w" alt="GoodWeave" class="goodweave">
-                        <img src="https://images.squarespace-cdn.com/content/v1/699b55b9f68bfd2f93b6ca27/60f1f401-93e2-4047-9114-40e1d712035f/d+%281%29+%281%29.png?format=1500w" alt="Logo" class="main-logo">
+
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%; flex-wrap: wrap; gap: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem;">
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <p style="font-size: 10px; color: #666; letter-spacing: 1px; text-transform: uppercase; margin: 0;">
+                            © 2026 Robin Gray Design. Certified GoodWeave.
+                        </p>
+                        <p style="font-size: 10px; color: #444; letter-spacing: 1px; text-transform: uppercase; margin: 0;">
+                            Made By <a href="http://www.skyloftdigital.com" target="_blank" style="color: var(--taupe); text-decoration: none;">Skyloft Digital</a>
+                        </p>
                     </div>
-                    <p style="font-size: 10px; color: #666; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px;">
-                        © 2026 Robin Gray Design. Certified GoodWeave.
-                    </p>
-                    <p style="font-size: 10px; color: #444; letter-spacing: 1px; text-transform: uppercase;">
-                        Made By <a href="http://www.skyloftdigital.com" target="_blank" style="color: var(--taupe); text-decoration: none;">Skyloft Digital</a>
-                    </p>
                     
-                    <div class="social-icons">
+                    <div class="social-icons" style="margin: 0;">
                         <a href="https://www.instagram.com/" target="_blank" aria-label="Instagram">
                             <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
                         </a>
                         <a href="https://www.pinterest.com/" target="_blank" aria-label="Pinterest">
-                            <svg viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.372 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.688 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345l-.279 1.14c-.038.154-.127.189-.286.115-1.068-.498-1.736-2.063-1.736-3.323 0-2.708 1.968-5.197 5.679-5.197 2.985 0 5.312 2.128 5.312 4.976 0 2.969-1.871 5.357-4.47 5.357-1.054 0-2.046-.548-2.384-1.198l-.649 2.47c-.234.895-.873 2.015-1.3 2.698C9.467 23.755 10.708 24 12 24c6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12z"/></svg>
+                            <svg viewBox="0 0 24 24"><path d="M16.292 5C10.536 5 7.48 8.866 7.48 13.077c0 1.955 1.039 4.392 2.707 5.168.253.118.387.064.443-.18.047-.185.273-1.089.373-1.511a.402.402 0 0 0-.095-.386c-.55-.667-.988-1.896-.988-3.041 0-2.942 2.228-5.787 6.021-5.787 3.28 0 5.571 2.23 5.571 5.426 0 3.61-1.82 6.108-4.191 6.108-1.309 0-2.291-1.081-1.978-2.413.378-1.584 1.106-3.298 1.106-4.438 0-1.026-.552-1.883-1.685-1.883-1.341 0-2.415 1.385-2.415 3.241 0 1.182.4 1.978.4 1.978s-1.323 5.593-1.563 6.634c-.413 1.765.051 4.625.094 4.876.021.134.172.18.252.066.129-.175 1.725-2.565 2.174-4.292l.828-3.171c.439.829 1.707 1.531 3.061 1.531 4.021 0 6.923-3.703 6.923-8.299C24.52 8.301 20.92 5 16.292 5z"/></svg>
                         </a>
                         <a href="https://www.facebook.com/" target="_blank" aria-label="Facebook">
                             <svg viewBox="0 0 24 24"><path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.593 1.323-1.325V1.325C24 .593 23.407 0 22.675 0z"/></svg>
                         </a>
                     </div>
                 </div>
+
             </div>
         </div>
     </footer>
